@@ -2,165 +2,567 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avaliação Física - Protocolo Jackson & Pollock</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Avaliação Física - Composição Corporal | Prof. Dr. Murilo Luiz Burim</title>
+    <!-- html2pdf library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background: #f4f7f9; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); padding: 30px; }
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #e9ecef;
+            margin: 0;
+            padding: 30px 20px;
+        }
+        .screen-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
+            overflow: hidden;
+            padding: 28px 30px 40px;
+        }
+        h1 {
+            font-size: 1.9rem;
+            color: #1e466e;
+            border-left: 6px solid #2c7da0;
+            padding-left: 20px;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .sub {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 12px;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+            background: #f8f9fc;
+            padding: 18px 20px;
+            border-radius: 24px;
+        }
+        .field {
+            flex: 1;
+            min-width: 140px;
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+            color: #0b3b5f;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 16px;
+            border: 1px solid #ced4da;
+            background: white;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        input:focus {
+            border-color: #2c7da0;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(44,125,160,0.2);
+        }
+        .sex-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .sex-group label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: normal;
+        }
+        h3 {
+            background: #eef2f7;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 1.3rem;
+            margin: 20px 0 15px 0;
+            color: #1f5068;
+        }
+        .dobras-table {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .dobras-row {
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .dobras-row:last-child {
+            border-bottom: none;
+        }
+        .dobra-cell {
+            flex: 1;
+            padding: 16px 12px;
+            border-right: 1px solid #edf2f7;
+            min-width: 110px;
+        }
+        .dobra-cell:last-child {
+            border-right: none;
+        }
+        .dobra-cell label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            color: #2c3e66;
+        }
+        .dobra-cell input {
+            width: 100%;
+            padding: 10px 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .medidas-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: #f8f9fc;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #e9ecef;
+        }
+        .medida-card {
+            background: white;
+            padding: 12px 18px;
+            border-radius: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .medida-card label {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+            margin: 30px 0 25px;
+        }
+        button {
+            background: #2c7da0;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            background: #1f5e7a;
+            transform: scale(0.97);
+        }
+        .btn-secondary {
+            background: #5f6c7a;
+        }
+        .btn-secondary:hover {
+            background: #3f4a57;
+        }
+        .result-area {
+            background: #fef9e6;
+            border-radius: 28px;
+            padding: 20px 25px;
+            margin-top: 30px;
+            border: 1px solid #ffecb3;
+        }
+        .result-block {
+            background: white;
+            border-radius: 24px;
+            padding: 5px 20px 15px;
+            margin-bottom: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .result-title {
+            font-weight: 800;
+            font-size: 1.2rem;
+            border-bottom: 2px dashed #ffc107;
+            display: inline-block;
+            margin: 12px 0 8px;
+        }
+        .value-highlight {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #1e466e;
+        }
+        .ref-note {
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-top: 12px;
+            text-align: right;
+        }
+        .footer-sign {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #2c3e50;
+            border-top: 1px solid #ddd;
+            padding-top: 18px;
+            font-weight: 500;
+        }
+        .footer-sign strong {
+            color: #1e466e;
+        }
         
-        h1 { color: #1a4a7a; font-size: 1.8rem; border-bottom: 2px solid #1a4a7a; padding-bottom: 10px; margin-bottom: 20px; }
-        h3 { background: #e9ecef; padding: 10px; border-radius: 8px; color: #1a4a7a; margin-top: 25px; }
-
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .field { display: flex; flex-direction: column; }
-        label { font-weight: 600; font-size: 0.85rem; margin-bottom: 5px; color: #555; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; }
-
-        /* Estilo para as dobras (3 colunas) */
-        .dobras-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #fcfcfc; padding: 15px; border: 1px solid #eee; border-radius: 10px; }
-        .dobra-item { text-align: center; }
-        .dobra-item label { text-align: center; display: block; }
-        .dobra-item input { width: 80px; text-align: center; margin: 0 auto; }
-
-        .btn-group { display: flex; gap: 15px; justify-content: center; margin: 30px 0; }
-        button { padding: 15px 30px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 1rem; }
-        #calcBtn { background: #1a4a7a; color: white; }
-        #printBtn { background: #6c757d; color: white; }
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
-
-        /* Área de Resultados */
-        .results-box { display: none; background: #fffdf2; border: 1px solid #ffe69c; border-radius: 12px; padding: 25px; margin-top: 20px; }
-        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .res-card { background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #1a4a7a; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .res-card h4 { margin: 0 0 10px 0; color: #1a4a7a; border-bottom: 1px solid #eee; }
-        .val { font-size: 1.2rem; font-weight: bold; color: #c0392b; }
-        .ref { font-size: 0.85rem; color: #666; font-style: italic; display: block; margin-top: 5px; }
-
-        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 0.85rem; color: #555; }
-
+        /* Estilos específicos para impressão/PDF - garante que o PDF tenha boa aparência */
         @media print {
-            body { background: white; padding: 0; }
-            .container { box-shadow: none; border: none; max-width: 100%; }
-            .no-print, h3, .dobras-container, .form-grid { display: none !important; }
-            .results-box { display: block !important; border: none; padding: 0; }
-            .res-card { border: 1px solid #ddd; break-inside: avoid; }
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .screen-container {
+                box-shadow: none;
+                padding: 0.4in;
+                max-width: 100%;
+            }
+            button, .btn-group, .btn-secondary, .sub, h3, .medidas-grid, .dobras-table, .form-row {
+                display: none;
+            }
+            .result-area {
+                background: white;
+                border: none;
+                padding: 0;
+                margin-top: 0;
+            }
+            .result-block {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                margin-bottom: 16px;
+                page-break-inside: avoid;
+            }
+            .result-title {
+                border-bottom: 1px solid #000;
+            }
+            .value-highlight {
+                color: black;
+            }
+            .footer-sign {
+                border-top: 1px solid #aaa;
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
 <body>
+<div class="screen-container" id="screenContainer">
+    <h1>Avaliação Física - Composição Corporal</h1>
+    <div class="sub">Protocolo Jackson & Pollock (20-65 anos) | Pontos de corte OMS</div>
 
-<div class="container">
-    <h1>Avaliação da Composição Corporal</h1>
-    
-    <div class="form-grid no-print">
-        <div class="field" style="grid-column: span 2;"><label>Nome Completo</label><input type="text" id="nome" value="Raíssa Silva"></div>
-        <div class="field"><label>Data</label><input type="date" id="data"></div>
-        <div class="field"><label>Idade (anos)</label><input type="number" id="idade" value="32"></div>
+    <!-- PRIMEIRO QUADRO: Dados pessoais -->
+    <div class="form-row">
+        <div class="field" style="flex:2"><label>Nome completo</label><input type="text" id="nome" placeholder="Ex: Raíssa Silva" value="Raíssa Silva"></div>
+        <div class="field"><label>Data</label><input type="text" id="data" placeholder="22/04/2026" value="22/04/2026"></div>
+        <div class="field"><label>Idade (anos)</label><input type="number" id="idade" step="1" value="32"></div>
         <div class="field"><label>Sexo</label>
-            <select id="sexo">
-                <option value="F" selected>Feminino</option>
-                <option value="M">Masculino</option>
-            </select>
+            <div class="sex-group">
+                <label><input type="radio" name="sexo" value="M"> Masculino</label>
+                <label><input type="radio" name="sexo" value="F" checked> Feminino</label>
+            </div>
         </div>
-        <div class="field"><label>Peso (kg)</label><input type="number" id="peso" step="0.1" value="57.2"></div>
-        <div class="field"><label>Estatura (m)</label><input type="number" id="estatura" step="0.01" value="1.57"></div>
-        <div class="field"><label>Cintura (cm)</label><input type="number" id="cintura" value="77.9"></div>
-        <div class="field"><label>Quadril (cm)</label><input type="number" id="quadril" value="95.6"></div>
     </div>
 
-    <h3 class="no-print">Dobras Cutâneas (mm)</h3>
-    <div class="dobras-container no-print">
-        <div class="dobra-item"><label>Tríceps 1</label><input type="number" class="tri" value="26.0"></div>
-        <div class="dobra-item"><label>Tríceps 2</label><input type="number" class="tri" value="26.5"></div>
-        <div class="dobra-item"><label>Tríceps 3</label><input type="number" class="tri" value="26.3"></div>
-        
-        <div class="dobra-item"><label>Abdominal 1</label><input type="number" class="abd" value="22.0"></div>
-        <div class="dobra-item"><label>Abdominal 2</label><input type="number" class="abd" value="22.0"></div>
-        <div class="dobra-item"><label>Abdominal 3</label><input type="number" class="abd" value="22.0"></div>
-        
-        <div class="dobra-item"><label>Suprailíaca 1</label><input type="number" class="sup" value="21.0"></div>
-        <div class="dobra-item"><label>Suprailíaca 2</label><input type="number" class="sup" value="21.5"></div>
-        <div class="dobra-item"><label>Suprailíaca 3</label><input type="number" class="sup" value="21.3"></div>
+    <!-- SEGUNDO QUADRO: 2x2 (Peso/Estatura / Cintura/Quadril) -->
+    <div class="medidas-grid">
+        <div class="medida-card"><label>Peso (kg)</label><input type="number" id="peso" step="0.1" value="57.2"></div>
+        <div class="medida-card"><label>Estatura (m)</label><input type="number" id="estatura" step="0.01" value="1.57"></div>
+        <div class="medida-card"><label>Perímetro Cintura (cm)</label><input type="number" id="cintura" step="0.1" value="77.9"></div>
+        <div class="medida-card"><label>Perímetro Quadril (cm)</label><input type="number" id="quadril" step="0.1" value="95.6"></div>
     </div>
 
-    <div class="btn-group no-print">
-        <button id="calcBtn" onclick="calcular()">📊 Calcular Resultados</button>
-        <button id="printBtn" onclick="window.print()">📄 Imprimir PDF</button>
-    </div>
-
-    <div id="results" class="results-box">
+    <!-- DOBRAS CUTÂNEAS: 3 linhas e 3 colunas -->
+    <h3>📏 Medidas de Dobras Cutâneas (mm) - média de 3 medidas</h3>
+    <div class="dobras-table">
+        <div class="dobras-row">
+            <div class="dobra-cell"><label>Tríceps 1 (mm)</label><input type="number" id="tri1" step="0.1" value="26.0"></div>
+            <div class="dobra-cell"><label>Tríceps 2 (mm)</label><input type="number" id="tri2" step="0.1" value="26.5"></div>
+            <div class="dobra-cell"><label>Tríceps 3 (mm)</label><input type="number" id="tri3" step="0.1" value="26.3"></div>
         </div>
+        <div class="dobras-row">
+            <div class="dobra-cell"><label>Abdominal 1 (mm)</label><input type="number" id="abd1" step="0.1" value="22.0"></div>
+            <div class="dobra-cell"><label>Abdominal 2 (mm)</label><input type="number" id="abd2" step="0.1" value="22.0"></div>
+            <div class="dobra-cell"><label>Abdominal 3 (mm)</label><input type="number" id="abd3" step="0.1" value="22.0"></div>
+        </div>
+        <div class="dobras-row">
+            <div class="dobra-cell"><label>Suprailíaca 1 (mm)</label><input type="number" id="sup1" step="0.1" value="21.0"></div>
+            <div class="dobra-cell"><label>Suprailíaca 2 (mm)</label><input type="number" id="sup2" step="0.1" value="21.5"></div>
+            <div class="dobra-cell"><label>Suprailíaca 3 (mm)</label><input type="number" id="sup3" step="0.1" value="21.3"></div>
+        </div>
+    </div>
 
-    <div class="footer">
-        <strong>Prof. Dr. Murilo Luiz Burim - CREF 032841-G/PR</strong><br>
-        Doutor em Educação Física • Arapongas, PR - 2026
+    <div class="btn-group">
+        <button id="calcularBtn">📊 Calcular Avaliação</button>
+        <button id="gerarPdfBtn" class="btn-secondary">📄 Gerar PDF (1 página)</button>
+    </div>
+
+    <!-- ÁREA DE RESULTADOS NA TELA - Será usada para gerar o PDF também -->
+    <div id="resultadosDinamicos" class="result-area">
+        <p style="text-align:center; color:#6c757d;"><em>Preencha os dados e clique em "Calcular Avaliação"</em></p>
+    </div>
+    
+    <div class="footer-sign" id="footerAssinatura">
+        <strong>Desenvolvido por Prof. Dr. Murilo Luiz Burim - CREF 032841-G/PR - 2026</strong><br>
+        Universidade Estadual de Londrina • Universidade Anhanguera/UNOPAR
     </div>
 </div>
 
 <script>
-    // Define a data de hoje por padrão
-    document.getElementById('data').valueAsDate = new Date();
-
-    function media(classe) {
-        const inputs = document.querySelectorAll('.' + classe);
-        let soma = 0;
-        inputs.forEach(i => soma += parseFloat(i.value || 0));
-        return soma / inputs.length;
-    }
-
-    function calcular() {
-        const nome = document.getElementById('nome').value;
-        const idade = parseInt(document.getElementById('idade').value);
-        const sexo = document.getElementById('sexo').value;
+    // Função que retorna todos os dados calculados
+    function obterResultadosCompletos() {
+        const nome = document.getElementById('nome').value.trim() || "Não informado";
+        const data = document.getElementById('data').value || "____/____/______";
+        const idade = parseFloat(document.getElementById('idade').value);
+        const sexoElem = document.querySelector('input[name="sexo"]:checked');
+        const sexo = sexoElem ? sexoElem.value : 'F';
         const peso = parseFloat(document.getElementById('peso').value);
         const estatura = parseFloat(document.getElementById('estatura').value);
         const cintura = parseFloat(document.getElementById('cintura').value);
         const quadril = parseFloat(document.getElementById('quadril').value);
-
-        const mTri = media('tri');
-        const mAbd = media('abd');
-        const mSup = media('sup');
-        const somaDobras = mTri + mAbd + mSup;
-
-        // IMC e Classificação
+        
+        const tri1 = parseFloat(document.getElementById('tri1').value) || 0;
+        const tri2 = parseFloat(document.getElementById('tri2').value) || 0;
+        const tri3 = parseFloat(document.getElementById('tri3').value) || 0;
+        const abd1 = parseFloat(document.getElementById('abd1').value) || 0;
+        const abd2 = parseFloat(document.getElementById('abd2').value) || 0;
+        const abd3 = parseFloat(document.getElementById('abd3').value) || 0;
+        const sup1 = parseFloat(document.getElementById('sup1').value) || 0;
+        const sup2 = parseFloat(document.getElementById('sup2').value) || 0;
+        const sup3 = parseFloat(document.getElementById('sup3').value) || 0;
+        
+        const mediaTri = (tri1 + tri2 + tri3) / 3;
+        const mediaAbd = (abd1 + abd2 + abd3) / 3;
+        const mediaSup = (sup1 + sup2 + sup3) / 3;
+        const somaDobras = mediaTri + mediaAbd + mediaSup;
+        
         const imc = peso / (estatura * estatura);
-        let classIMC = imc < 18.5 ? "Baixo Peso" : imc < 25 ? "Eutrofia" : imc < 30 ? "Sobrepeso" : "Obesidade";
-
-        // Densidade Corporal e %GC (Jackson & Pollock 3 dobras)
-        let dc, gc;
+        let classificacaoIMC = "";
+        if (imc <= 18.4) classificacaoIMC = "Baixo Peso";
+        else if (imc >= 18.5 && imc <= 24.9) classificacaoIMC = "Faixa Recomendável para a Saúde";
+        else if (imc >= 25 && imc <= 29.9) classificacaoIMC = "Sobrepeso";
+        else if (imc >= 30 && imc <= 34.9) classificacaoIMC = "Obesidade grau I";
+        else if (imc >= 35 && imc <= 39.9) classificacaoIMC = "Obesidade grau II";
+        else classificacaoIMC = "Obesidade grau III";
+        
+        let percentualGordura = 0;
         if (sexo === 'M') {
-            dc = 1.10938 - (0.0008267 * somaDobras) + (0.0000016 * Math.pow(somaDobras, 2)) - (0.0002574 * idade);
-            gc = ((4.95 / dc) - 4.5) * 100;
+            percentualGordura = 0.39287 * somaDobras - 0.00105 * Math.pow(somaDobras, 2) + 0.15772 * idade - 5.18845;
         } else {
-            dc = 1.0994921 - (0.0009929 * somaDobras) + (0.0000023 * Math.pow(somaDobras, 2)) - (0.0001392 * idade);
-            gc = ((4.95 / dc) - 4.5) * 100;
+            percentualGordura = 0.41563 * somaDobras - 0.00112 * Math.pow(somaDobras, 2) + 0.03661 * idade + 4.03653;
         }
-
-        // RCQ
-        const rcq = cintura / quadril;
-        let classRCQ = (sexo === 'M' && rcq > 0.95) || (sexo === 'F' && rcq > 0.85) ? "Risco Aumentado" : "Risco Baixo";
-
-        const pGordura = peso * (gc / 100);
-        const mMagra = peso - pGordura;
-
-        // Montagem do HTML de Resultado
-        document.getElementById('results').style.display = 'block';
-        document.getElementById('results').innerHTML = `
-            <div style="text-align:center; margin-bottom:20px;">
-                <h2 style="margin:0; color:#1a4a7a;">Relatório de Avaliação Física</h2>
-                <p><strong>Paciente:</strong> ${nome} | <strong>Idade:</strong> ${idade} anos | <strong>Data:</strong> ${document.getElementById('data').value}</p>
+        percentualGordura = Math.min(Math.max(percentualGordura, 3), 55);
+        const pesoGordura = peso * (percentualGordura / 100);
+        const massaMagra = peso - pesoGordura;
+        
+        let pesoMin, pesoMax;
+        if (sexo === 'M') {
+            pesoMin = massaMagra / 0.90;
+            pesoMax = massaMagra / 0.82;
+        } else {
+            pesoMin = massaMagra / 0.84;
+            pesoMax = massaMagra / 0.75;
+        }
+        
+        let classificacaoGordura = "";
+        if (sexo === 'M') {
+            if (percentualGordura < 10) classificacaoGordura = "Abaixo do recomendado (<10%)";
+            else if (percentualGordura <= 18) classificacaoGordura = "Recomendável (10-18%)";
+            else if (percentualGordura <= 25) classificacaoGordura = "Acima do ideal (>18%)";
+            else classificacaoGordura = "Obesidade (>25% GC)";
+        } else {
+            if (percentualGordura < 16) classificacaoGordura = "Abaixo do recomendado (<16%)";
+            else if (percentualGordura <= 25) classificacaoGordura = "Recomendável (16-25%)";
+            else if (percentualGordura <= 32) classificacaoGordura = "Acima do ideal (>25%)";
+            else classificacaoGordura = "Obesidade (>32% GC)";
+        }
+        
+        let rcq = null, classificacaoRCQ = "Não calculado";
+        if (!isNaN(cintura) && cintura > 0 && !isNaN(quadril) && quadril > 0) {
+            rcq = cintura / quadril;
+            if (sexo === 'M') classificacaoRCQ = rcq >= 0.95 ? "Risco Aumentado (≥0,95)" : "Risco Baixo";
+            else classificacaoRCQ = rcq >= 0.85 ? "Risco Aumentado (≥0,85)" : "Risco Baixo";
+        }
+        
+        let rce = null, classificacaoRCE = "Não calculado";
+        if (!isNaN(cintura) && cintura > 0 && estatura > 0) {
+            rce = (cintura / estatura) * 100;
+            if (sexo === 'M') {
+                if (rce > 58.1) classificacaoRCE = "Risco Muito Alto (>58,1%)";
+                else if (rce > 53.5) classificacaoRCE = "Risco Aumentado (>53,5%)";
+                else classificacaoRCE = "Risco Normal";
+            } else {
+                if (rce > 54.1) classificacaoRCE = "Risco Muito Alto (>54,1%)";
+                else if (rce > 49.1) classificacaoRCE = "Risco Aumentado (>49,1%)";
+                else classificacaoRCE = "Risco Normal";
+            }
+        }
+        
+        let riscoCintura = "";
+        if (!isNaN(cintura) && cintura > 0) {
+            if (sexo === 'M') {
+                if (cintura >= 102) riscoCintura = "Alto Risco (≥102 cm)";
+                else if (cintura >= 94) riscoCintura = "Risco Moderado (≥94 cm)";
+                else riscoCintura = "Risco Baixo";
+            } else {
+                if (cintura >= 88) riscoCintura = "Alto Risco (≥88 cm)";
+                else if (cintura >= 80) riscoCintura = "Risco Moderado (≥80 cm)";
+                else riscoCintura = "Risco Baixo";
+            }
+        } else riscoCintura = "Não informado";
+        
+        return {
+            nome, data, idade, sexo, peso, estatura, cintura, quadril,
+            mediaTri, mediaAbd, mediaSup, somaDobras, imc, classificacaoIMC,
+            percentualGordura, pesoGordura, massaMagra, pesoMin, pesoMax,
+            classificacaoGordura, riscoCintura, rcq, classificacaoRCQ, rce, classificacaoRCE
+        };
+    }
+    
+    // Atualiza a interface com os resultados (tela)
+    function atualizarResultadosTela() {
+        const d = obterResultadosCompletos();
+        let html = `
+            <div class="result-block">
+                <div class="result-title">📌 Dados do Paciente</div>
+                <p><strong>Nome:</strong> ${d.nome} &nbsp;| <strong>Data:</strong> ${d.data} &nbsp;| <strong>Idade:</strong> ${d.idade} anos &nbsp;| <strong>Sexo:</strong> ${d.sexo === 'M' ? 'Masculino' : 'Feminino'}</p>
+                <p><strong>Peso:</strong> ${d.peso.toFixed(1)} kg &nbsp;| <strong>Estatura:</strong> ${d.estatura.toFixed(2)} m &nbsp;| <strong>IMC =</strong> ${d.imc.toFixed(2)} kg/m² → <strong>${d.classificacaoIMC}</strong></p>
             </div>
+            <div class="result-block">
+                <div class="result-title">📐 Dobras Cutâneas (médias mm)</div>
+                <p>Tríceps: ${d.mediaTri.toFixed(1)} mm | Abdominal: ${d.mediaAbd.toFixed(1)} mm | Suprailíaca: ${d.mediaSup.toFixed(1)} mm | <strong>Soma (A+B+C):</strong> ${d.somaDobras.toFixed(1)} mm</p>
+            </div>
+            <div class="result-block">
+                <div class="result-title">⚡ Percentual de Gordura (%G)</div>
+                <p><span class="value-highlight">${d.percentualGordura.toFixed(1)}%</span> → ${d.classificacaoGordura}</p>
+                <p><strong>Peso de Gordura:</strong> ${d.pesoGordura.toFixed(1)} kg | <strong>Massa Magra:</strong> ${d.massaMagra.toFixed(1)} kg</p>
+            </div>
+            <div class="result-block">
+                <div class="result-title">🏋️ Faixa de Peso Recomendável</div>
+                <p><strong>Mínimo (${d.sexo === 'M' ? '10% gordura' : '16% gordura'}):</strong> ${d.pesoMin.toFixed(1)} kg &nbsp;| <strong>Máximo (${d.sexo === 'M' ? '18% gordura' : '25% gordura'}):</strong> ${d.pesoMax.toFixed(1)} kg</p>
+                <p><em>*Baseado no %G ideal para adultos não atletas (ACSM/OMS).</em></p>
+            </div>
+            <div class="result-block">
+                <div class="result-title">📏 Distribuição da Gordura (Riscos)</div>
+                <p><strong>Cintura:</strong> ${d.cintura ? d.cintura.toFixed(1) + ' cm' : '—'} → ${d.riscoCintura}</p>
+                <p><strong>RCQ (Cintura/Quadril):</strong> ${d.rcq ? d.rcq.toFixed(3) : '---'} → ${d.classificacaoRCQ}</p>
+                <p><strong>RCE (Cintura/Estatura):</strong> ${d.rce ? d.rce.toFixed(1) + '%' : '---'} → ${d.classificacaoRCE}</p>
+            </div>
+            <div class="ref-note">*Protocolo Jackson & Pollock (20-65 anos) e pontos de corte OMS.</div>
+        `;
+        document.getElementById('resultadosDinamicos').innerHTML = html;
+    }
+    
+    // Função para gerar PDF a partir do elemento visível (resultadosDinamicos)
+    // Esta abordagem é mais confiável pois o conteúdo já está renderizado no DOM
+    function gerarPDF() {
+        // Primeiro garantir que os resultados estejam atualizados
+        atualizarResultadosTela();
+        
+        // Aguardar um breve momento para a renderização
+        setTimeout(() => {
+            // Criar um clone da área de resultados + cabeçalho + rodapé para o PDF
+            const elementToPdf = document.createElement('div');
+            elementToPdf.style.width = '100%';
+            elementToPdf.style.background = 'white';
+            elementToPdf.style.padding = '0.4in';
+            elementToPdf.style.fontFamily = "'Times New Roman', Times, serif";
             
-            <div class="res-grid">
-                <div class="res-card">
-                    <h4>Média das Dobras (mm)</h4>
-                    Tríceps: ${mTri.toFixed(1)} | Abdominal: ${mAbd.toFixed(1)} | Suprailíaca: ${mSup.toFixed(1)}<br>
-                    <strong>Soma das 3 dobras: ${somaDobras.toFixed(1)} mm</strong>
-                </div>
-
-                <div class="res-card">
-                    <h4>Composição Corporal</h4>
-                    % de Gordura: <span class="val">${gc.toFixed(1)}%</span><br>
-                    Massa Gorda: ${pGordura.toFixed(1)} kg | Massa Magra: ${mMagra.toFixed(1)} kg
-                    <span class="ref">Ref. Pollock: Recomendado ${sexo === 'M' ? '10
+            // Adicionar título
+            const title = document.createElement('div');
+            title.style.textAlign = 'center';
+            title.style.marginBottom = '20px';
+            title.innerHTML = '<h2 style="margin:0; font-size: 20pt;">Avaliação Física - Composição Corporal</h2><hr style="border-top:1px solid #000;">';
+            elementToPdf.appendChild(title);
+            
+            // Clonar os resultados (resultadosDinamicos)
+            const resultadosOriginais = document.getElementById('resultadosDinamicos');
+            const cloneResultados = resultadosOriginais.cloneNode(true);
+            // Remover cores e estilos desnecessários para o PDF
+            cloneResultados.style.background = 'white';
+            cloneResultados.style.border = 'none';
+            cloneResultados.style.padding = '0';
+            cloneResultados.style.margin = '0';
+            // Ajustar cada result-block
+            const blocks = cloneResultados.querySelectorAll('.result-block');
+            blocks.forEach(block => {
+                block.style.boxShadow = 'none';
+                block.style.border = '1px solid #ccc';
+                block.style.marginBottom = '15px';
+                block.style.pageBreakInside = 'avoid';
+            });
+            const titles = cloneResultados.querySelectorAll('.result-title');
+            titles.forEach(t => {
+                t.style.borderBottom = '1px solid #000';
+            });
+            const highlights = cloneResultados.querySelectorAll('.value-highlight');
+            highlights.forEach(h => {
+                h.style.color = 'black';
+            });
+            elementToPdf.appendChild(cloneResultados);
+            
+            // Adicionar rodapé
+            const footer = document.createElement('div');
+            footer.style.marginTop = '20px';
+            footer.style.borderTop = '1px solid #aaa';
+            footer.style.paddingTop = '12px';
+            footer.style.textAlign = 'center';
+            footer.style.fontSize = '9pt';
+            footer.innerHTML = `
+                *Protocolo Jackson & Pollock (20-65 anos) e pontos de corte OMS.<br>
+                <strong>Desenvolvido por Prof. Dr. Murilo Luiz Burim - CREF 032841-G/PR - 2026</strong><br>
+                Universidade Estadual de Londrina • Universidade Anhanguera/UNOPAR
+            `;
+            elementToPdf.appendChild(footer);
+            
+            // Adicionar ao body temporariamente
+            document.body.appendChild(elementToPdf);
+            
+            // Configuração do PDF
+            const opt = {
+                margin: [0.4, 0.4, 0.4, 0.4],
+                filename: `avaliacao_fisica_${new Date().toISOString().slice(0,19)}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, letterRendering: true, backgroundColor: '#FFFFFF', logging: false },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(opt).from(elementToPdf).save().then(() => {
+                document.body.removeChild(elementToPdf);
+            }).catch((err) => {
+                console.error('Erro no PDF:', err);
+                document.body.removeChild(elementToPdf);
+                alert('Erro ao gerar PDF. Tente novamente.');
+            });
+        }, 100);
+    }
+    
+    // Eventos
+    document.getElementById('calcularBtn').addEventListener('click', atualizarResultadosTela);
+    document.getElementById('gerarPdfBtn').addEventListener('click', gerarPDF);
+    
+    // Inicialização
+    window.addEventListener('DOMContentLoaded', () => {
+        atualizarResultadosTela();
+    });
+</script>
+</body>
+</html>
