@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Avaliação Física - Composição Corporal | Prof. Dr. Murilo Luiz Burim</title>
-    <!-- html2pdf library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -224,42 +222,62 @@
             color: #1e466e;
         }
         
-        /* Estilos específicos para impressão/PDF - garante que o PDF tenha boa aparência */
+        /* ========== ESTILOS ESPECÍFICOS PARA IMPRESSÃO ========== */
         @media print {
+            /* Oculta elementos que não devem aparecer no PDF/impressão */
+            .btn-group, button, .sub, h3, .medidas-grid, .dobras-table, .form-row {
+                display: none !important;
+            }
+            
             body {
                 background: white;
                 padding: 0;
                 margin: 0;
             }
+            
             .screen-container {
-                box-shadow: none;
-                padding: 0.4in;
+                padding: 0.3in;
                 max-width: 100%;
+                box-shadow: none;
+                background: white;
             }
-            button, .btn-group, .btn-secondary, .sub, h3, .medidas-grid, .dobras-table, .form-row {
-                display: none;
-            }
+            
+            /* A área de resultados fica visualmente limpa */
             .result-area {
                 background: white;
                 border: none;
                 padding: 0;
                 margin-top: 0;
             }
+            
             .result-block {
                 box-shadow: none;
                 border: 1px solid #ccc;
                 margin-bottom: 16px;
                 page-break-inside: avoid;
+                background: white;
             }
+            
             .result-title {
                 border-bottom: 1px solid #000;
-            }
-            .value-highlight {
                 color: black;
             }
+            
+            .value-highlight {
+                color: black;
+                font-weight: bold;
+            }
+            
             .footer-sign {
                 border-top: 1px solid #aaa;
                 margin-top: 20px;
+            }
+            
+            h1 {
+                color: black;
+                border-left: none;
+                text-align: center;
+                margin-bottom: 20px;
             }
         }
     </style>
@@ -312,10 +330,10 @@
 
     <div class="btn-group">
         <button id="calcularBtn">📊 Calcular Avaliação</button>
-        <button id="gerarPdfBtn" class="btn-secondary">📄 Gerar PDF (1 página)</button>
+        <button id="imprimirBtn" class="btn-secondary">🖨️ Imprimir / Salvar PDF</button>
     </div>
 
-    <!-- ÁREA DE RESULTADOS NA TELA - Será usada para gerar o PDF também -->
+    <!-- ÁREA DE RESULTADOS -->
     <div id="resultadosDinamicos" class="result-area">
         <p style="text-align:center; color:#6c757d;"><em>Preencha os dados e clique em "Calcular Avaliação"</em></p>
     </div>
@@ -437,7 +455,7 @@
         };
     }
     
-    // Atualiza a interface com os resultados (tela)
+    // Atualiza a interface com os resultados na tela
     function atualizarResultadosTela() {
         const d = obterResultadosCompletos();
         let html = `
@@ -471,93 +489,20 @@
         document.getElementById('resultadosDinamicos').innerHTML = html;
     }
     
-    // Função para gerar PDF a partir do elemento visível (resultadosDinamicos)
-    // Esta abordagem é mais confiável pois o conteúdo já está renderizado no DOM
-    function gerarPDF() {
-        // Primeiro garantir que os resultados estejam atualizados
+    // Função para imprimir (ou salvar como PDF via impressão)
+    function imprimirResultados() {
+        // Garantir que os resultados estejam atualizados
         atualizarResultadosTela();
         
-        // Aguardar um breve momento para a renderização
+        // Pequeno delay para garantir que o DOM foi atualizado
         setTimeout(() => {
-            // Criar um clone da área de resultados + cabeçalho + rodapé para o PDF
-            const elementToPdf = document.createElement('div');
-            elementToPdf.style.width = '100%';
-            elementToPdf.style.background = 'white';
-            elementToPdf.style.padding = '0.4in';
-            elementToPdf.style.fontFamily = "'Times New Roman', Times, serif";
-            
-            // Adicionar título
-            const title = document.createElement('div');
-            title.style.textAlign = 'center';
-            title.style.marginBottom = '20px';
-            title.innerHTML = '<h2 style="margin:0; font-size: 20pt;">Avaliação Física - Composição Corporal</h2><hr style="border-top:1px solid #000;">';
-            elementToPdf.appendChild(title);
-            
-            // Clonar os resultados (resultadosDinamicos)
-            const resultadosOriginais = document.getElementById('resultadosDinamicos');
-            const cloneResultados = resultadosOriginais.cloneNode(true);
-            // Remover cores e estilos desnecessários para o PDF
-            cloneResultados.style.background = 'white';
-            cloneResultados.style.border = 'none';
-            cloneResultados.style.padding = '0';
-            cloneResultados.style.margin = '0';
-            // Ajustar cada result-block
-            const blocks = cloneResultados.querySelectorAll('.result-block');
-            blocks.forEach(block => {
-                block.style.boxShadow = 'none';
-                block.style.border = '1px solid #ccc';
-                block.style.marginBottom = '15px';
-                block.style.pageBreakInside = 'avoid';
-            });
-            const titles = cloneResultados.querySelectorAll('.result-title');
-            titles.forEach(t => {
-                t.style.borderBottom = '1px solid #000';
-            });
-            const highlights = cloneResultados.querySelectorAll('.value-highlight');
-            highlights.forEach(h => {
-                h.style.color = 'black';
-            });
-            elementToPdf.appendChild(cloneResultados);
-            
-            // Adicionar rodapé
-            const footer = document.createElement('div');
-            footer.style.marginTop = '20px';
-            footer.style.borderTop = '1px solid #aaa';
-            footer.style.paddingTop = '12px';
-            footer.style.textAlign = 'center';
-            footer.style.fontSize = '9pt';
-            footer.innerHTML = `
-                *Protocolo Jackson & Pollock (20-65 anos) e pontos de corte OMS.<br>
-                <strong>Desenvolvido por Prof. Dr. Murilo Luiz Burim - CREF 032841-G/PR - 2026</strong><br>
-                Universidade Estadual de Londrina • Universidade Anhanguera/UNOPAR
-            `;
-            elementToPdf.appendChild(footer);
-            
-            // Adicionar ao body temporariamente
-            document.body.appendChild(elementToPdf);
-            
-            // Configuração do PDF
-            const opt = {
-                margin: [0.4, 0.4, 0.4, 0.4],
-                filename: `avaliacao_fisica_${new Date().toISOString().slice(0,19)}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, letterRendering: true, backgroundColor: '#FFFFFF', logging: false },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
-            
-            html2pdf().set(opt).from(elementToPdf).save().then(() => {
-                document.body.removeChild(elementToPdf);
-            }).catch((err) => {
-                console.error('Erro no PDF:', err);
-                document.body.removeChild(elementToPdf);
-                alert('Erro ao gerar PDF. Tente novamente.');
-            });
+            window.print();
         }, 100);
     }
     
     // Eventos
     document.getElementById('calcularBtn').addEventListener('click', atualizarResultadosTela);
-    document.getElementById('gerarPdfBtn').addEventListener('click', gerarPDF);
+    document.getElementById('imprimirBtn').addEventListener('click', imprimirResultados);
     
     // Inicialização
     window.addEventListener('DOMContentLoaded', () => {
